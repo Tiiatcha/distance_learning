@@ -10,7 +10,6 @@ const {
   getAllCourses,
   getCourseById,
   getCourseByFields,
-  getCoursesByCollection,
 } = require("../../dao/repositories/courcesRepository");
 
 const CourseQueries = {
@@ -38,15 +37,6 @@ const CourseQueries = {
     },
     resolve: async (parent, args, context) => {
       return getAllCourses(args);
-    },
-  },
-  courseInCollection: {
-    type: new GraphQLList(CourseType),
-    args: {
-      collection: { type: new GraphQLNonNull(GraphQLInt) },
-    },
-    resolve: async (parent, args, context) => {
-      return getCoursesByCollection(args.collection);
     },
   },
   //   courseByFields: {

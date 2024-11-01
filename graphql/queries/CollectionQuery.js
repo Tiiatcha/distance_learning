@@ -7,12 +7,13 @@ const {
 } = require("graphql");
 
 const CollectionType = require("../types/CollectionType");
+const CourseType = require("../types/CourseType");
 
 const {
-  getAllCollections,
+  getCollections,
   getCollectionById,
   getCoursesInCollection,
-} = require("../../dao/repositories/collectionRepository");
+} = require("../../dao/repositories/collectionsRepository");
 
 const CollectionQueries = {
   collection: {
@@ -25,16 +26,18 @@ const CollectionQueries = {
   collections: {
     type: new GraphQLList(CollectionType),
     resolve: async () => {
-      return getAllCollections();
+      return getCollections();
     },
   },
   coursesInCollection: {
-    type: new GraphQLList(CollectionType),
+    type: new GraphQLList(CourseType),
     args: {
-      collection: { type: new GraphQLNonNull(GraphQLInt) },
+      id: { type: new GraphQLNonNull(GraphQLInt) },
     },
     resolve: async (parent, args, context) => {
-      return getCoursesInCollection(args.collection);
+      return getCoursesInCollection(args.id);
     },
   },
 };
+
+module.exports = CollectionQueries;
