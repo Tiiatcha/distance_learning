@@ -29,21 +29,10 @@ const getAllCourses = async (args) => {
   return result.rows;
 };
 const getCourseById = async (id) => {
-  const sqlString = `SELECT courses.*, categories.name as collectionName FROM courses WHERE id = $1
-  JOIN categories ON courses.collection = categories.id`;
+  const sqlString = `SELECT courses.*, categories.name as collectionName FROM courses 
+  JOIN categories ON courses.collection = categories.id WHERE courses.id = $1`;
   const result = await pool.query(sqlString, [id]);
   return result.rows[0];
-};
-const getCourseCollections = async () => {
-  const sqlString = `SELECT * FROM categories`;
-  const result = await pool.query(sqlString);
-  return result.rows;
-};
-const getCoursesByCollection = async (collectionId) => {
-  const sqlString = `SELECT courses.*, categories.name as collectionName  FROM courses WHERE collection = $1
-    JOIN categories ON courses.collection = categories.id`;
-  const result = await pool.query(sqlString, [collectionId]);
-  return result.rows;
 };
 
 const getCourseByFields = async (fields) => {
@@ -57,13 +46,23 @@ const getCourseByFields = async (fields) => {
   return result.rows;
 };
 const createCourse = async (course) => {
-  const { name, description, price } = course;
+  const { title, description, collectionId, duration, instructor, outcome } =
+    course;
   const sqlString =
-    "INSERT INTO courses (name, description, price) VALUES ($1, $2, $3) RETURNING *";
-  const result = await pool.query(sqlString, [name, description, price]);
+    "INSERT INTO courses (title, description, collection, duration, instructor, outcome) VALUES ($1, $2, $3,$4,$5,$6) RETURNING *";
+  const result = await pool.query(sqlString, [
+    title,
+    description,
+    collectionId,
+    duration,
+    instructor,
+    outcome,
+  ]);
   return result.rows[0];
 };
 const updateCourse = async (id, course) => {
+  console.log(id);
+  console.log(course);
   // receive course object with updated values with unknown order and unknown keys
   const fields = Object.keys(course);
   const values = Object.values(course);
@@ -75,6 +74,7 @@ const updateCourse = async (id, course) => {
     .join(", ");
   const sqlString = `UPDATE courses SET ${whereClause} WHERE id = $1 RETURNING *`;
   const result = await pool.query(sqlString, [id, ...values]);
+  return result.rows[0];
 };
 
 const deleteCourse = async (id) => {
@@ -87,7 +87,6 @@ module.exports = {
   getAllCourses,
   getCourseById,
   getCourseByFields,
-  getCoursesByCollection,
   createCourse,
   updateCourse,
   deleteCourse,
