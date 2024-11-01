@@ -6,6 +6,7 @@ const {
 } = require("graphql");
 
 const checkAuth = require("../../utils/checkAuth");
+const checkRole = require("../../utils/checkRole");
 
 const CourseType = require("../types/CourseType");
 const {
@@ -28,7 +29,7 @@ const CourseMutations = {
     },
     resolve: async (parent, args, context) => {
       const user = checkAuth(context);
-      console.log("Add Course User:", user);
+      checkRole(context, ["ADMIN"]);
       return createCourse(args);
     },
   },
@@ -45,6 +46,8 @@ const CourseMutations = {
     },
     resolve: async (parent, args, context) => {
       // split out id from other args
+      const user = checkAuth(context);
+      checkRole(context, ["ADMIN"]);
       const { id, ...fields } = args;
       return updateCourse(id, fields);
     },
@@ -55,6 +58,8 @@ const CourseMutations = {
       id: { type: new GraphQLNonNull(GraphQLInt) },
     },
     resolve: async (parent, args, context) => {
+      const user = checkAuth(context);
+      checkRole(context, ["ADMIN"]);
       return deleteCourse(args.id);
     },
   },
