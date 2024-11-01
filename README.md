@@ -24,12 +24,12 @@ This project is a GraphQL API built for Open Study College, allowing internal us
 
 To set up PostgreSQL and populate the database with seed data, run the following command:
 
-`npm run setup-db`
+`npm run ./dbSetup/createDB.js` (to follow)
 
 This script will:
 
-- Create the required tables for courses and collections.
-- Insert initial seed data to get started with sample courses and categories.
+- Create the required tables for courses, collections and users.
+- Insert initial seed data to get started with sample courses, collections and users.
 
 Ensure your PostgreSQL server is running, and update any required configuration (such as database credentials) in the `.env` file.
 
@@ -37,15 +37,17 @@ Ensure your PostgreSQL server is running, and update any required configuration 
 
 Create a `.env` file in the root of the project and configure the following variables:
 
-NODE_ENV=development  
-DB_HOST=localhost  
-DB_USER=postgres  
-DB_PASS=password  
-DB_NAME=distance_learning_test  
-DB_PORT=5432  
-PORT=5003  
-JWT_SECRET=secret  
+```
+NODE_ENV=development
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASS=password
+DB_NAME=distance_learning
+DB_PORT=5432
+PORT=5003 (or any of your choosing)
+JWT_SECRET=secret
 JWT_EXPIRES_IN=5m
+```
 
 ## NPM Packages
 
@@ -56,7 +58,6 @@ A brief list of the core NPM packages used in this project:
 - dotenv: For environment variable management
 - jsonwebtoken: For handling JWT authentication
 - pg: PostgreSQL client for Node.js
-- TypeORM (optional): For database ORM if used
 
 More packages are listed in `package.json`.
 
@@ -83,29 +84,41 @@ More packages are listed in `package.json`.
 
 - Role-based Authorization (Bonus)
 
-## GraphQL Mutation Example
+### GraphQL Mutation Example
 
 Below is an example of a GraphQL mutation to add a new course.
 
-### Mutation Example
+#### Mutation Example
 
-`mutation { createCourse( title: "Basics of Chemistry", description: "Learn the foundations of chemistry, including atomic structure and reactions.", collectionId: 2, instructor: "Dr. Robert Fields", duration: 12, outcome: "Students will understand and apply chemical reactions." ) { id title collection { name } } }`
+```
+`mutation {
+    createCourse( title: "Basics of Chemistry", description: "Learn the foundations of chemistry, including atomic structure and reactions.", collectionId: 2, instructor: "Dr. Robert Fields", duration: 12, outcome: "Students will understand and apply chemical reactions." ) {
+        id
+        title
+        collection {
+            name
+        }
+    }
+}`
+```
 
-### Expected Response
+#### Expected Response
 
 If successful, the mutation will return the following response:
 
+```
 {
-"data": {
-"createCourse": {
-"id": "101",
-"title": "Basics of Chemistry",
-"collection": {
-"name": "Science"
+    "data": {
+        "createCourse": {
+            "id": "101",
+            "title": "Basics of Chemistry",
+            "collection": {
+                "name": "Science"
+            }
+        }
+    }
 }
-}
-}
-}
+```
 
 ---
 

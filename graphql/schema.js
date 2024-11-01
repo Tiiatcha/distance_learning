@@ -1,12 +1,17 @@
 const { GraphQLObjectType, GraphQLSchema } = require("graphql");
 
 const CourseQueries = require("./queries/CourseQuery");
+const CollectionQueries = require("./queries/CollectionQuery");
+
+// import mutations
+const CourseMutations = require("./mutations/CourseMutations");
 
 // Root Query
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
     ...CourseQueries,
+    ...CollectionQueries,
     //...UserQueries,
   },
 });
@@ -15,12 +20,12 @@ const RootQuery = new GraphQLObjectType({
 const RootMutation = new GraphQLObjectType({
   name: "RootMutationType",
   fields: {
-    // ...CourseMutations,
+    ...CourseMutations,
     // ...UserMutations,
   },
 });
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
-  //mutation: RootMutation,
+  mutation: RootMutation,
 });
