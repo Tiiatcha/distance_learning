@@ -4,6 +4,7 @@ const { graphqlHTTP } = require("express-graphql");
 const color = require("colors");
 require("dotenv").config();
 
+const authenticate = require("./middleware/authenticate");
 // schema
 const schema = require("./graphql/schema");
 
@@ -13,6 +14,7 @@ const app = express();
 //middleware
 
 //auth middleware
+app.use(authenticate);
 
 // GraphQL endpoint
 app.use(

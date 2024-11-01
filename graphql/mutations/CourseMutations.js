@@ -5,12 +5,15 @@ const {
   GraphQLEnumType,
 } = require("graphql");
 
+const checkAuth = require("../../utils/checkAuth");
+
 const CourseType = require("../types/CourseType");
 const {
   createCourse,
   updateCourse,
   deleteCourse,
 } = require("../../dao/repositories/courcesRepository");
+const { on } = require("node-cache");
 
 const CourseMutations = {
   addCourse: {
@@ -24,6 +27,8 @@ const CourseMutations = {
       outcome: { type: new GraphQLNonNull(GraphQLString) },
     },
     resolve: async (parent, args, context) => {
+      const user = checkAuth(context);
+      console.log("Add Course User:", user);
       return createCourse(args);
     },
   },
