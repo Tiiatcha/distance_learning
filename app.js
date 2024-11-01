@@ -4,6 +4,9 @@ const { graphqlHTTP } = require("express-graphql");
 const color = require("colors");
 require("dotenv").config();
 
+// schema
+const schema = require("./graphql/schema");
+
 // imports
 
 const app = express();
