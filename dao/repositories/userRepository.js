@@ -47,12 +47,12 @@ const userRegistration = async (user) => {
 };
 
 loginUser = async (user) => {
-  const { email, password } = user;
+  const { username, password } = user;
 
-  const sqlString = "SELECT * FROM users WHERE email = $1";
-  const result = await pool.query(sqlString, [email]);
+  const sqlString = "SELECT * FROM users WHERE username = $1";
+  const result = await pool.query(sqlString, [username]);
   if (result.rows.length === 0) {
-    throw new Error("Invalid credentials (email).");
+    throw new Error("Invalid credentials (username).");
   }
   const userRecord = result.rows[0];
   const isPasswordValid = await bcrypt.compare(

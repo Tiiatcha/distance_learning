@@ -22,7 +22,7 @@ const UserMutations = {
   loginUser: {
     type: ResponseType,
     args: {
-      email: { type: new GraphQLNonNull(GraphQLString) },
+      username: { type: new GraphQLNonNull(GraphQLString) },
       password: { type: new GraphQLNonNull(GraphQLString) },
     },
     resolve: async (parent, args, context) => {
