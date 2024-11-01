@@ -8,11 +8,14 @@ require("dotenv").config();
 const schema = require("./graphql/schema");
 
 // imports
-
+const errorHandler = require("./utils/errorHandler");
+const authenticate = require("./middleware/authenticate");
+const e = require("cors");
 const app = express();
 //middleware
 
 //auth middleware
+app.use(authenticate);
 
 // GraphQL endpoint
 app.use(
@@ -24,6 +27,7 @@ app.use(
       querEditor: process.env.NODE_ENV === "development",
       headerEditorEnabled: process.env.NODE_ENV === "development",
     },
+    customFormatErrorFn: errorHandler,
   }))
 );
 
