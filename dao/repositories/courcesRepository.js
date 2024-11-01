@@ -48,6 +48,13 @@ const getCourseByFields = async (fields) => {
 const createCourse = async (course) => {
   const { title, description, collectionId, duration, instructor, outcome } =
     course;
+
+  // check if course with the same title already exists
+  const existingCourses = await getCourseByFields({ title });
+  if (existingCourses.length > 0) {
+    throw new Error(`Course with the title of ${title} already exists!`);
+  }
+
   const sqlString =
     "INSERT INTO courses (title, description, collection, duration, instructor, outcome) VALUES ($1, $2, $3,$4,$5,$6) RETURNING *";
   const result = await pool.query(sqlString, [

@@ -5,6 +5,7 @@ const CollectionQueries = require("./queries/CollectionQuery");
 
 // import mutations
 const CourseMutations = require("./mutations/CourseMutations");
+const UserMutations = require("./mutations/UserMutations");
 
 // Root Query
 const RootQuery = new GraphQLObjectType({
@@ -21,7 +22,7 @@ const RootMutation = new GraphQLObjectType({
   name: "RootMutationType",
   fields: {
     ...CourseMutations,
-    // ...UserMutations,
+    ...UserMutations,
   },
 });
 
