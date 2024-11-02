@@ -6,6 +6,8 @@ const {
   GraphQLInt,
 } = require("graphql");
 
+const checkAuth = require("../../utils/checkAuth");
+
 const CollectionType = require("../types/CollectionType");
 const CourseType = require("../types/CourseType");
 
@@ -20,12 +22,14 @@ const CollectionQueries = {
     type: CollectionType,
     args: { id: { type: new GraphQLNonNull(GraphQLID) } },
     resolve: async (parent, args, context) => {
+      checkAuth(context);
       return getCollectionById(args.id);
     },
   },
   collections: {
     type: new GraphQLList(CollectionType),
     resolve: async () => {
+      checkAuth(context);
       return getCollections();
     },
   },
@@ -35,6 +39,7 @@ const CollectionQueries = {
       id: { type: new GraphQLNonNull(GraphQLInt) },
     },
     resolve: async (parent, args, context) => {
+      checkAuth(context);
       return getCoursesInCollection(args.id);
     },
   },
