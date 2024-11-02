@@ -5,6 +5,9 @@ const {
   GraphQLEnumType,
   GraphQLInt,
 } = require("graphql");
+
+const checkAuth = require("../../utils/checkAuth");
+
 const CourseType = require("../types/CourseType");
 const {
   getAllCourses,
@@ -17,6 +20,7 @@ const CourseQueries = {
     type: CourseType,
     args: { id: { type: new GraphQLNonNull(GraphQLID) } },
     resolve: async (parent, args, context) => {
+      checkAuth(context);
       return getCourseById(args.id);
     },
   },
@@ -36,18 +40,10 @@ const CourseQueries = {
       },
     },
     resolve: async (parent, args, context) => {
+      checkAuth(context);
       return getAllCourses(args);
     },
   },
-  //   courseByFields: {
-  //     type: new GraphQLList(CourseType),
-  //     args: {
-  //       fields: { type: new GraphQLNonNull(CourseType) },
-  //     },
-  //     resolve: async (parent, args, context) => {
-  //       return coursesRepository.getCourseByFields(args.fields);
-  //     },
-  //   },
 };
 
 module.exports = CourseQueries;
