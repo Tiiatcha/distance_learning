@@ -8,7 +8,7 @@ const getCollections = async () => {
 };
 const getCoursesInCollection = async (id) => {
   const sqlString = `SELECT * FROM categories
-  JOIN courses ON categories.id = courses.collection WHERE courses.id = $1`;
+  LEFT OUTER JOIN courses ON categories.id = courses.collection WHERE categories.id = $1`;
   const result = await pool.query(sqlString, [id]);
   return result.rows;
 };
