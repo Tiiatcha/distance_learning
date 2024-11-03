@@ -15,12 +15,8 @@ const userRegistration = async (user) => {
     "SELECT * FROM users WHERE email = $1 OR username = $2",
     [email, username]
   );
-  console.log(existingUser);
-  // assuming upto two records are returned
-  // check if email is incluced in the returned records
-  // then check if username is included in the returned records
+
   if (existingUser.rows.length > 0) {
-    // use an array method to check if email is included in the returned records
     const isEmailTaken = existingUser.rows.some((user) => user.email === email);
     const isUsernameTaken = existingUser.rows.some(
       (user) => user.username === username
@@ -40,7 +36,6 @@ const userRegistration = async (user) => {
     "USER",
   ]);
 
-  // move this to a separate function
   const newToken = createToken({ id: result.rows[0].id, role: "USER" });
 
   return { user: result.rows[0], token: newToken };

@@ -28,7 +28,7 @@ const CollectionQueries = {
   },
   collections: {
     type: new GraphQLList(CollectionType),
-    resolve: async () => {
+    resolve: async (parent, args, context) => {
       checkAuth(context);
       return getCollections();
     },
