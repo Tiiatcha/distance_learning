@@ -1,6 +1,5 @@
 const pool = require("../../config/db");
 
-// const Get all collections
 const getCollections = async () => {
   const sqlString = `SELECT * FROM categories`;
   const result = await pool.query(sqlString);
@@ -12,7 +11,7 @@ const getCoursesInCollection = async (id) => {
   const result = await pool.query(sqlString, [id]);
   return result.rows;
 };
-// const Get collection by id
+
 const getCollectionById = async (id) => {
   const sqlString = `SELECT * FROM categories WHERE id = $1`;
   const result = await pool.query(sqlString, [id]);
