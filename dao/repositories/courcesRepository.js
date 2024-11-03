@@ -11,7 +11,7 @@ const getAllCourses = async (args) => {
 
   // Add ORDER BY clause for sortOrder if provided
   if (args.sortOrder) {
-    // Validate sortOrder to only allow 'ASC' or 'DESC' (prevents SQL injection)
+    // Validate sortOrder to only allow 'ASC' or 'DESC'
     const sortOrder = args.sortOrder.toUpperCase();
     if (sortOrder !== "ASC" && sortOrder !== "DESC") {
       throw new Error("Invalid sort order. Use 'ASC' or 'DESC'.");
@@ -21,7 +21,7 @@ const getAllCourses = async (args) => {
 
   // Add LIMIT clause if provided
   if (args.limit) {
-    params.push(args.limit); // Add limit as a parameter
+    params.push(args.limit);
     sqlString += ` LIMIT $${params.length}`;
   }
 
