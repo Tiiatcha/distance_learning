@@ -4,63 +4,42 @@ const bcrypt = require("bcryptjs");
 const { createToken, verifyToken } = require("../../utils/jwt");
 const e = require("cors");
 
-const userRegistration = async (user) => {
-  const { username, email, password, repeatPassword } = user;
-  if (password !== repeatPassword) {
-    throw new Error("Passwords do not match.");
+const insertUser = async (username, email, password_hash, role) => {
+  try {
+    const sqlString = `INSERT INTO users (username, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING *`;
+    const result = await pool.query(sqlString, [
+      username,
+      email,
+      password_hash,
+      role || "USER",
+    ]);
+    result.rows[0].password_hash = undefined;
+    return result.rows[0];
+  } catch (error) {
+    // Handle specific database errors
+    if (error.code === "23505") {
+      // Unique violation
+      throw new Error("Email or username already exists.");
+    }
+    throw new Error("An error occurred while creating the user.");
   }
-
-  // select user by email or username which may result in two records to check
-  const existingUser = await pool.query(
-    "SELECT * FROM users WHERE email = $1 OR username = $2",
-    [email, username]
-  );
-
-  if (existingUser.rows.length > 0) {
-    const isEmailTaken = existingUser.rows.some((user) => user.email === email);
-    const isUsernameTaken = existingUser.rows.some(
-      (user) => user.username === username
-    );
-    if (isEmailTaken) throw new Error("Email is already taken.");
-    if (isUsernameTaken) throw new Error("Username is already taken.");
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const sqlString =
-    "INSERT INTO users (username, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING *";
-  console.log(sqlString);
-  const result = await pool.query(sqlString, [
-    username,
-    email,
-    hashedPassword,
-    "USER",
-  ]);
-
-  const newToken = createToken({ id: result.rows[0].id, role: "USER" });
-
-  return { user: result.rows[0], token: newToken };
 };
 
-loginUser = async (user) => {
-  const { username, password } = user;
+const deleteUser = async (username) => {
+  // TODO: Change to not delete but to deactivate the user and anonymize the data
+  console.log("Deleting user:", username);
+  const sqlString = `DELETE FROM users WHERE username = $1 AND role != $2 RETURNING *`;
 
-  const sqlString = "SELECT * FROM users WHERE username = $1";
-  const result = await pool.query(sqlString, [username]);
-  if (result.rows.length === 0) {
-    throw new Error("Invalid credentials (username).");
+  try {
+    const result = await pool.query(sqlString, [username, "ADMIN"]);
+
+    if (result.rows.length === 0) throw new Error("User not found.");
+
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Could not delete user.");
   }
-  const userRecord = result.rows[0];
-  const isPasswordValid = await bcrypt.compare(
-    password,
-    userRecord.password_hash
-  );
-  if (!isPasswordValid) {
-    throw new Error("Invalid credentials (password).");
-  }
-
-  const newToken = createToken({ id: result.rows[0].id, role: "USER" });
-
-  return { user: userRecord, token: newToken, count: 1 };
 };
 
 const getAllUsers = async (args) => {
@@ -85,15 +64,57 @@ const getAllUsers = async (args) => {
   const result = await pool.query(sqlString, params);
   return result.rows;
 };
+/**
+ * Get a user by their id
+ */
 const getUserById = async (id) => {
   const sqlString = `SELECT * FROM users WHERE id = $1`;
   const result = await pool.query(sqlString, [id]);
   return result.rows[0];
 };
 
+/***
+ * Get a user by their username
+ * @param {string} username
+ * @returns {object} User object
+ */
+const getUserByUsername = async (username) => {
+  const sqlString = `SELECT * FROM users WHERE username = $1`;
+  const result = await pool.query(sqlString, [id]);
+  return result.rows[0];
+};
+// Get users based on any number of fields and values in the where clause.
+// THere is also an option to match all or any of the fields.
+
+const getUsersByFields = async (fields, matchAll = true) => {
+  const fieldNames = Object.keys(fields);
+  const fieldValues = Object.values(fields);
+
+  if (fieldNames.length === 0) {
+    throw new Error("No fields provided for query");
+  }
+
+  let sqlString = `SELECT * FROM users WHERE `;
+  const params = [];
+  let count = 1;
+
+  // Use Array.prototype.map to create the where clause
+  const whereClause = fieldNames
+    .map((field, index) => {
+      params.push(fieldValues[index]);
+      return `${field} = $${count++}`;
+    })
+    .join(` ${matchAll ? "AND" : "OR"} `); // Join with AND/OR based on matchAll
+
+  const result = await pool.query(sqlString + whereClause, params);
+
+  return result.rows;
+};
+
 module.exports = {
-  userRegistration,
-  loginUser,
-  getAllUsers,
+  insertUser,
   getUserById,
+  deleteUser,
+  getUserByUsername,
+  getUsersByFields,
 };
