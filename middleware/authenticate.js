@@ -2,6 +2,7 @@ const { getUserById } = require("../dao/repositories/userRepository");
 const { createToken, verifyToken } = require("../utils/jwt");
 
 const authMiddleware = async (req, res, next) => {
+  console.log("Authenticating user...");
   const authHeader = req.headers.authorization;
   console.log("Authorization Header:", authHeader);
   if (authHeader) {
@@ -20,6 +21,8 @@ const authMiddleware = async (req, res, next) => {
         console.error("Authentication error: User not found.");
         req.user = null;
       } else {
+        req.token = token;
+        console.log("Request token:", req.token);
         req.user = user;
       }
     } catch (error) {

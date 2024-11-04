@@ -4,7 +4,8 @@ const ResponseType = require("../types/ResponseType");
 const {
   userRegistration,
   loginUser,
-} = require("../../dao/repositories/userRepository");
+  deleteUser,
+} = require("../../dao/services/userServices");
 
 const UserMutations = {
   registerUser: {
@@ -27,6 +28,15 @@ const UserMutations = {
     },
     resolve: async (parent, args, context) => {
       return loginUser(args);
+    },
+  },
+  deleteUser: {
+    type: ResponseType,
+    args: {
+      username: { type: new GraphQLNonNull(GraphQLString) },
+    },
+    resolve: async (parent, args, context) => {
+      return deleteUser(args.username, context);
     },
   },
 };

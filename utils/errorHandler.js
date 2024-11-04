@@ -8,7 +8,8 @@ const errorHandler = (error) => {
     path: error.path,
   };
   // if in development mode, show the stack trace
-  if (process.env.NODE_ENV === "development") error_details.stack = error.stack;
+  if (process.env.LEARNING_NODE_ENV === "development")
+    error_details.stack = error.stack;
   return error_details;
 };
 

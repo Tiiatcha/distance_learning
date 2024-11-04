@@ -2,8 +2,12 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const color = require("colors");
-require("dotenv").config();
+require("dotenv").config({
+  path: process.env.LEARNING_NODE_ENV.trim() === "test" ? ".env.test" : ".env",
+});
 
+console.log("Environment: ", process.env.LEARNING_NODE_ENV);
+console.log("Database name: ", process.env.DB_NAME);
 // schema
 const schema = require("./graphql/schema");
 
@@ -24,8 +28,8 @@ app.use(
     schema,
     context: req,
     graphiql: {
-      querEditor: process.env.NODE_ENV === "development",
-      headerEditorEnabled: process.env.NODE_ENV === "development",
+      querEditor: process.env.LEARNING_NODE_ENV === "development",
+      headerEditorEnabled: process.env.LEARNING_NODE_ENV === "development",
     },
     customFormatErrorFn: errorHandler,
   }))
