@@ -26,25 +26,26 @@ const errorHandler = (error) => {
   };
 
   // Determine the appropriate status code
-  let statusCode;
-  if (error.message.includes("token")) {
-    statusCode = 401; // Unauthorized for token errors
-  } else if (error instanceof GraphQLError) {
-    statusCode =
-      error.extensions?.code === "UNAUTHENTICATED"
-        ? 401
-        : error.extensions?.code === "FORBIDDEN"
-        ? 403
-        : 400; // Default to 400 for bad requests
-  } else {
-    statusCode = 500; // Internal Server Error
-  }
+  // let statusCode;
+  // if (error.message.includes("token")) {
+  //   statusCode = 401; // Unauthorized for token errors
+  // } else if (error instanceof GraphQLError) {
+  //   statusCode =
+  //     error.extensions?.code === "UNAUTHENTICATED"
+  //       ? 401
+  //       : error.extensions?.code === "FORBIDDEN"
+  //       ? 403
+  //       : 400; // Default to 400 for bad requests
+  // } else {
+  //   statusCode = 500; // Internal Server Error
+  // }
 
   // Include the status code in the response
-  return {
-    statusCode,
-    error: error_details,
-  };
+  // return {
+  //   // statusCode,
+  //   error: error_details,
+  // };
+  return error_details;
 };
 
 module.exports = errorHandler;

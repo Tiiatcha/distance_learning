@@ -1,8 +1,8 @@
 const request = require("supertest");
 const bcrypt = require("bcryptjs");
-const app = require("../../app"); // Your express app
+const app = require("../../src/app"); // Your express app
 const jwt = require("jsonwebtoken");
-const pool = require("../../config/db");
+const pool = require("../../src/config/db");
 const e = require("cors");
 
 const token = jwt.sign({ id: 1, role: "USER" }, process.env.JWT_SECRET); // Mock token
@@ -54,7 +54,7 @@ describe("User GraphQL API", () => {
       .send({
         query: `
           mutation {
-            registerUser(username: "testuser", email: "test@example.com", password: "testpass",repeatPassword:"testpass") {
+            registerUser(username: "testuser32", email: "test32@example.com", password: "testpass",repeatPassword:"testpass") {
               user{
               id
               username
@@ -68,8 +68,8 @@ describe("User GraphQL API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.registerUser).toBeDefined();
-    expect(response.body.data.registerUser.user.username).toBe("testuser");
-    expect(response.body.data.registerUser.user.email).toBe("test@example.com");
+    expect(response.body.data.registerUser.user.username).toBe("testuser32");
+    expect(response.body.data.registerUser.user.email).toBe("test32@example.com");
     expect(response.body.data.registerUser.token).toBeDefined();
   });
   // Test the registerUser mutation with a user that already exists

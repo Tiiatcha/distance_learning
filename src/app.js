@@ -2,6 +2,7 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const color = require("colors");
+
 require("dotenv").config({
   path: process.env.LEARNING_NODE_ENV.trim() === "test" ? ".env.test" : ".env",
 });
@@ -16,6 +17,7 @@ const errorHandler = require("./utils/errorHandler");
 const authenticate = require("./middleware/authenticate");
 const e = require("cors");
 const app = express();
+app.use(express.json());
 //middleware
 
 //auth middleware

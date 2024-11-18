@@ -2,13 +2,13 @@
   "name": "distance_learning",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "LEARNING_NODE_ENV=production node server.js",
-    "dev": "LEARNING_NODE_ENV=development nodemon server.js",
+    "start": "LEARNING_NODE_ENV=production node src/server.js",
+    "dev": "LEARNING_NODE_ENV=development nodemon src/server.js",
     "test": "cross-env LEARNING_NODE_ENV=test jest --detectOpenHandles",
     "test:watch": "cross-env LEARNING_NODE_ENV=test jest --watch",
     "test:coverage": "cross-env LEARNING_NODE_ENV=test jest --coverage"

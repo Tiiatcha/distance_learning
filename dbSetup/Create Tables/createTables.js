@@ -1,4 +1,4 @@
-const dbPool = require("../../config/db");
+const dbPool = require("../../src/config/db");
 
 const createTables = async () => {
   const createCategoriesTableQuery = `
