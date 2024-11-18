@@ -1,44 +1,39 @@
-const { getUserById } = require("../dao/repositories/userRepository");
-const { createToken, verifyToken } = require("../utils/jwt");
-
 const authMiddleware = async (req, res, next) => {
   console.log("Authenticating user...");
   const authHeader = req.headers.authorization;
-  console.log("Authorization Header:", authHeader);
+
   if (authHeader) {
-    // Extract the token from the header
     const token = authHeader.split(" ")[1];
 
-    //console.log("Token:", token);
-    try {
-      // Verify the access token
-      const decoded = verifyToken(token);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: "No token provided. Please log in." });
+    }
 
-      // Find the user by ID
+    try {
+      const decoded = verifyToken(token, req); // Pass req for potential token renewal
       const user = await getUserById(decoded.id);
 
       if (!user) {
-        console.error("Authentication error: User not found.");
-        req.user = null;
-      } else {
-        req.token = token;
-        console.log("Request token:", req.token);
-        req.user = user;
+        return res.status(401).json({ error: "User not found." });
       }
+
+      req.token = token;
+      req.user = user;
     } catch (error) {
-      // Handle specific JWT errors
-      if (error.name === "TokenExpiredError") {
-        console.error("Authentication error: Token has expired.");
-      } else if (error.name === "JsonWebTokenError") {
-        console.error("Authentication error: Invalid token.");
+      if (error.message.includes("expired")) {
+        return res
+          .status(401)
+          .json({ error: "Token has expired. Please log in again." });
       } else {
-        console.error("Authentication error:", error);
+        return res
+          .status(401)
+          .json({ error: "Invalid token. Please provide a valid token." });
       }
-      req.user = null;
     }
   } else {
-    // No Authorization header
-    req.user = null;
+    return res.status(401).json({ error: "Authorization header is missing." });
   }
 
   next();
