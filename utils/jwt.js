@@ -14,8 +14,7 @@ function createToken(payload) {
 
 function verifyToken(token, context) {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
     const isExpiringSoon =
       decoded.exp - currentTime < TOKEN_EXPIRATION_THRESHOLD;
@@ -24,10 +23,10 @@ function verifyToken(token, context) {
     if (isExpiringSoon) {
       const newToken = jwt.sign(
         { id: decoded.id, role: context.user.role },
-        JWT_SECRET,
+        process.env.JWT_SECRET,
         { expiresIn: JWT_EXPIRATION }
-      ); // Change expiration as needed
-      return newToken;
+      );
+      return newToken; // Return both the new token
     }
 
     return decoded; // Return the decoded token if no renewal is needed

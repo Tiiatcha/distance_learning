@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const app = require("../../app"); // Your express app
 const jwt = require("jsonwebtoken");
 const pool = require("../../config/db");
+const e = require("cors");
 
 const token = jwt.sign({ id: 1, role: "USER" }, process.env.JWT_SECRET); // Mock token
 
@@ -146,14 +147,14 @@ describe("User GraphQL API", () => {
       .post("/graphql")
       .send({
         query: `mutation {
-                        registerUser(username: "testuser4", email: "test4@example.com", password: "test",repeatPassword:"test") {
-                            user{
-                            id
-                            username
-                            email
-                        }
-                        }
-                    }`,
+                    registerUser(username: "testuser4", email: "test4@example.com", password: "test",repeatPassword:"test") {
+                        user{
+                        id
+                        username
+                        email
+                    }
+                    }
+                }`,
       });
     expect(response.status).toBe(200);
     expect(response.body.errors).toBeDefined();
@@ -167,21 +168,78 @@ describe("User GraphQL API", () => {
       .post("/graphql")
       .send({
         query: `mutation {
-                            registerUser(username: "testuser5", email: "test5@example.com", password: "testpass",repeatPassword:"testpass1") {
-                                user{
-                                id
-                                username
-                                email
-                            }
-                            }
-                        }`,
+                    registerUser(username: "testuser5", email: "test5@example.com", password: "testpass",repeatPassword:"testpass1") {
+                        user{
+                        id
+                        username
+                        email
+                    }
+                    }
+                }`,
       });
     expect(response.status).toBe(200);
     expect(response.body.errors).toBeDefined();
     expect(response.body.errors[0].message).toBe("Passwords do not match.");
   });
-
   // test the registration mutation where the password is missing
+  it("7. should not register a user with a missing password", async () => {
+    const response = await request(app)
+      .post("/graphql")
+      .send({
+        query: `mutation {
+                        registerUser(username: "testuser6", email: "test6@example.com", password: "",repeatPassword:"testpass") {
+                            user{
+                            id
+                            username
+                            email
+                        }
+                        }
+                    }`,
+      });
+    expect(response.status).toBe(200);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body.errors[0].message).toBe("Password is required.");
+  });
   // test the registration mutation where the repeatPassword is missing
+  it("8. should not register a user with a missing password confirmation", async () => {
+    const response = await request(app)
+      .post("/graphql")
+      .send({
+        query: `mutation {
+                    registerUser(username: "testuser6", email: "test6@example.com", password: "testpass",repeatPassword:"") {
+                        user{
+                        id
+                        username
+                        email
+                    }
+                    }
+                }`,
+      });
+    expect(response.status).toBe(200);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body.errors[0].message).toBe(
+      "Repeat password is required."
+    );
+  });
   // test the registration mutation with a username that is too short
+  it("9. should not register a user with a username that is too short", async () => {
+    const response = await request(app)
+      .post("/graphql")
+      .send({
+        query: `mutation {
+                        registerUser(username: "te", email: "test9@example.com", password: "testpass",repeatPassword:"testpass") {
+                            user{
+                            id
+                            username
+                            email
+                        }
+                        }
+                    }`,
+      });
+    expect(response.status).toBe(200);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body.errors[0].message).toBe(
+      "Username must be between 3 and 20 characters."
+    );
+  });
 });

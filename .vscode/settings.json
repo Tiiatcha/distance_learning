@@ -1,0 +1,15 @@
+{
+    "editor.fontSize": 14,
+    "editor.fontFamily": "Dank Mono, monospace",
+    "editor.codeLensFontFamily": "Dank Mono, monospace",
+    "editor.inlayHints.fontFamily": "Dank Mono, monospace",
+    "editor.inlineSuggest.fontFamily": "Dank Mono, monospace",
+    "debug.console.fontFamily": "Dank Mono, monospace",
+    "scm.inputFontFamily": "Dank Mono, monospace",
+    "terminal.integrated.fontFamily": "Dank Mono, monospace",
+    "notebook.output.fontFamily": "Dank Mono, monospace",
+    "chat.editor.fontFamily": "Dank Mono, monospace",
+    "rest-client.fontFamily": "Dank Mono, monospace",
+    "apc.monospace.font.family": "Dank Mono, monospace",
+    "editor.fontVariations": true
+}
