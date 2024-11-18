@@ -1,10 +1,17 @@
+const { verifyToken } = require("../utils/jwt");
+const { getUserById } = require("../dao/services/userServices");
+
 const authMiddleware = async (req, res, next) => {
   console.log("Authenticating user...");
   const authHeader = req.headers.authorization;
 
+  // Allow requests to the login endpoint to pass through without authentication
+  if (req.path === "/graphql" && (req.body.query.includes("loginUser") || req.body.query.includes("registerUser"))) {
+    return next();
+  }
+
   if (authHeader) {
     const token = authHeader.split(" ")[1];
-
     if (!token) {
       return res
         .status(401)
@@ -13,7 +20,9 @@ const authMiddleware = async (req, res, next) => {
 
     try {
       const decoded = verifyToken(token, req); // Pass req for potential token renewal
+      console.log("decoded:", decoded);
       const user = await getUserById(decoded.id);
+      console.log("user:", user);
 
       if (!user) {
         return res.status(401).json({ error: "User not found." });

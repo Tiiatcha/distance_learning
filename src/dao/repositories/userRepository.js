@@ -105,9 +105,10 @@ const getUsersByFields = async (fields, matchAll = true) => {
       return `${field} = $${count++}`;
     })
     .join(` ${matchAll ? "AND" : "OR"} `); // Join with AND/OR based on matchAll
-
+    console.log(sqlString + whereClause);
+    console.log(params);
   const result = await pool.query(sqlString + whereClause, params);
-
+    console.log('users:', result.rows);
   return result.rows;
 };
 

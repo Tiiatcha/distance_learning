@@ -5,6 +5,28 @@ const validator = require("validator");
 const { createToken, verifyToken } = require("../../utils/jwt");
 const checkRole = require("../../utils/checkRole");
 
+
+/**
+ * Get user by id
+ * @param {number} id
+ * @returns {object} User
+ * @throws {Error} If no id provided
+ * @throws {Error} If user not found
+ * @returns {object} User
+ */
+const getUserById = async (id) => {
+  if (!id) throw new Error("Id is required.");
+  try {
+    const result = await userRepository.getUserById(id);
+    console.log('result:', result);
+    return result;
+  } catch (error) {
+    console.error("Error in getUserById service:", error);
+    throw new Error("User not found.");
+  }
+}
+
+
 /**
  * Validates password and repeatPassword for registration.
  * @param {string} password
@@ -36,6 +58,7 @@ const emailUsernameValidation = async ({ username, email }) => {
     throw new Error("Username must be between 3 and 20 characters.");
   if (!validator.isEmail(email)) throw new Error("Email is not valid.");
 
+
   try {
     const existingUser = await userRepository.getUsersByFields({
       email,
@@ -65,7 +88,7 @@ const emailUsernameValidation = async ({ username, email }) => {
  */
 const userRegistration = async (user) => {
   const { username, email, password, repeatPassword } = user;
-
+  //console.log('registering user:', user);
   // validate email and username
   await emailUsernameValidation({ email, username });
 
@@ -93,7 +116,7 @@ const userRegistration = async (user) => {
  */
 const loginUser = async (user) => {
   const { username, password } = user;
-
+  console.log('getting details for user:', username);
   // check username is provided
   if (!username) throw new Error("Username is required.");
 
@@ -153,5 +176,6 @@ module.exports = {
   userRegistration,
   loginUser,
   deleteUser,
+  getUserById,
   // getAllUsers,
 };
