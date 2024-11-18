@@ -4,6 +4,8 @@
 
 This project is a GraphQL API developed as part of an assessment for Open Study College, enabling internal users to manage a database of distance learning courses. The API includes authentication and authorization, ensuring secure access to course data, with selective access to mutations based on user roles.
 
+Though I made every effort to achieve all objectives I was not able to in the time given. This branch of the work represents what I did achieve in the given time scale, however the Development Branch is where I chose to continue working. In this I have included a demonstration of testing using jest, made further refinements to the code base and began the work to migrate to TypeScript.
+
 - [OSC Backend Engineer Assessment Documentation](#osc-backend-engineer-assessment-documentation)
   - [1. Project Overview](#1-project-overview)
   - [2. Key Technical Decisions and Implementation](#2-key-technical-decisions-and-implementation)
