@@ -2,7 +2,7 @@ const { GraphQLError } = require("graphql");
 const checkAuth = require("./checkAuth");
 
 const checkRole = (context, roles) => {
-  const { role } = context;
+  const { role } = context.user;
   console.log("Role: ", role);
   const user = checkAuth(context);
 

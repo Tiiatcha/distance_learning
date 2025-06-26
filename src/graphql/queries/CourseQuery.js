@@ -41,6 +41,7 @@ const CourseQueries = {
     },
     resolve: async (parent, args, context) => {
       checkAuth(context);
+
       return getAllCourses(args);
     },
   },
