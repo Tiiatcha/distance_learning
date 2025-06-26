@@ -74,6 +74,8 @@ describe("User GraphQL API", () => {
   });
   // Test the registerUser mutation with a user that already exists
   it("2. should not register a user that already exists", async () => {
+    // Make a request to the app with the registerUser endpoint and
+    // store the response in a variable named response.
     const response = await request(app)
       .post("/graphql")
       .send({
@@ -86,12 +88,14 @@ describe("User GraphQL API", () => {
                     email
                 }
                 }
-            }
-            `,
+            }`,
       });
-
+    
+    // Check if the response status is 200
     expect(response.status).toBe(200);
+    // Check if the response body has an errors property
     expect(response.body.errors).toBeDefined();
+    // Check if the first error message is "Email is already taken."
     expect(response.body.errors[0].message).toBe(
       "Error checking user and email: Email is already taken."
     );
