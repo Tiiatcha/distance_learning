@@ -1,13 +1,13 @@
 const request = require("supertest");
 const bcrypt = require("bcryptjs");
-const app = require("../../src/app"); // Your express app
+const app = require("../../src/app");
 const jwt = require("jsonwebtoken");
 const pool = require("../../src/config/db");
 const e = require("cors");
 
 const token = jwt.sign({ id: 1, role: "USER" }, process.env.JWT_SECRET); // Mock token
 
-describe("User GraphQL API", () => {
+describe("User Registration GraphQL API", () => {
   beforeAll(async () => {
     // Insert a user into the database before running the tests
     await pool.query(
